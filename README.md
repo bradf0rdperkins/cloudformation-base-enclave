@@ -7,3 +7,4 @@ Use the following command to generate a list of security group rules in JSON for
 
 NACLs: ec2 describe-network-acls
 
+Tools: VS Code plus CloudFormation plugin. Shift+Alt+F to format after adding a snippet.
