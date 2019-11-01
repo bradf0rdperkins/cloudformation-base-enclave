@@ -78,45 +78,45 @@
             "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
             "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x."
         },
-        "DBPort" : {
-            "Default" : "3306",
-            "Description" : "TCP/IP port for the database",
-            "Type" : "Number",
-            "MinValue" : "1150",
-            "MaxValue" : "65535"
-          },
-          "DBAllocatedStorage" : {
-            "Default" : "20",
-            "Description" : "Database storage size",
-            "Type" : "Number",
-            "MinValue" : "20",
-            "MaxValue" : "1000"
-          },
-          "DBPwd" : {
-            "NoEcho" : "true",
-            "Description" : "The database admin account password",
-            "Type" : "String",
-            "MinLength" : "1",
-            "MaxLength" : "41",
-            "AllowedPattern" : "^[a-zA-Z0-9]*$"
-          },
-          "DBUser" : {
-            "Description" : "The database admin account username",
-            "Type" : "String",
-            "MinLength" : "1",
-            "MaxLength" : "16",
-            "AllowedPattern" : "[a-zA-Z][a-zA-Z0-9]*",
+        "DBPort": {
+            "Default": "3306",
+            "Description": "TCP/IP port for the database",
+            "Type": "Number",
+            "MinValue": "1150",
+            "MaxValue": "65535"
+        },
+        "DBAllocatedStorage": {
+            "Default": "20",
+            "Description": "Database storage size",
+            "Type": "Number",
+            "MinValue": "20",
+            "MaxValue": "1000"
+        },
+        "DBPwd": {
+            "NoEcho": "true",
+            "Description": "The database admin account password",
+            "Type": "String",
+            "MinLength": "1",
+            "MaxLength": "41",
+            "AllowedPattern": "^[a-zA-Z0-9]*$"
+        },
+        "DBUser": {
+            "Description": "The database admin account username",
+            "Type": "String",
+            "MinLength": "1",
+            "MaxLength": "16",
+            "AllowedPattern": "[a-zA-Z][a-zA-Z0-9]*",
             "ConstraintDescription": "Must begin with a letter and contain only alphanumeric characters."
-          },
-          "DBName" : {
+        },
+        "DBName": {
             "Default": "MyDatabase",
-            "Description" : "The database name",
-            "Type" : "String",
-            "MinLength" : "1",
-            "MaxLength" : "64",
-            "AllowedPattern" : "[a-zA-Z][a-zA-Z0-9]*",
+            "Description": "The database name",
+            "Type": "String",
+            "MinLength": "1",
+            "MaxLength": "64",
+            "AllowedPattern": "[a-zA-Z][a-zA-Z0-9]*",
             "ConstraintDescription": "Must begin with a letter and contain only alphanumeric characters."
-          }
+        }
     },
     "Mappings": {
         "Region2Examples": {
@@ -584,8 +584,8 @@
             "Type": "AWS::EC2::VPC",
             "Properties": {
                 "CidrBlock": "10.2.0.0/16",
-                "EnableDnsSupport" : "true",
-                "EnableDnsHostnames" : "true",
+                "EnableDnsSupport": "true",
+                "EnableDnsHostnames": "true",
                 "Tags": [
                     {
                         "Key": "Application",
@@ -603,7 +603,7 @@
                     "Ref": "VPC"
                 },
                 "CidrBlock": "10.2.3.0/24",
-                "MapPublicIpOnLaunch" : "true",
+                "MapPublicIpOnLaunch": "true",
                 "Tags": [
                     {
                         "Key": "Application",
@@ -621,7 +621,7 @@
                     "Ref": "VPC"
                 },
                 "CidrBlock": "10.2.4.0/24",
-                "MapPublicIpOnLaunch" : "true",
+                "MapPublicIpOnLaunch": "true",
                 "Tags": [
                     {
                         "Key": "Application",
@@ -639,7 +639,7 @@
                     "Ref": "VPC"
                 },
                 "CidrBlock": "10.2.5.0/24",
-                "AvailabilityZone" : "us-west-1a",
+                "AvailabilityZone": "us-west-1a",
                 "Tags": [
                     {
                         "Key": "Application",
@@ -657,7 +657,7 @@
                     "Ref": "VPC"
                 },
                 "CidrBlock": "10.2.6.0/24",
-                "AvailabilityZone" : "us-west-1b",
+                "AvailabilityZone": "us-west-1b",
                 "Tags": [
                     {
                         "Key": "Application",
@@ -846,7 +846,7 @@
                 "RuleAction": "allow",
                 "Egress": "true",
                 "CidrBlock": "0.0.0.0/0",
-                "Icmp": { 
+                "Icmp": {
                     "Code": "-1",
                     "Type": "-1"
                 }
@@ -914,11 +914,12 @@
                 "Name": "openamacetest.maxdevops.net",
                 "Type": "A",
                 "TTL": "900",
-                "ResourceRecords": [{
+                "ResourceRecords": [
+                    {
                         "Ref": "openAMIPAddress"
-                        }
-                    ]
-            } 
+                    }
+                ]
+            }
         },
         "WebSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
@@ -1126,7 +1127,7 @@
                         "IpProtocol": "tcp",
                         "FromPort": "0",
                         "ToPort": "65535",
-                        "DestinationSecurityGroupId" : {
+                        "DestinationSecurityGroupId": {
                             "Ref": "DBSecurityGroup"
                         }
                     },
@@ -1373,21 +1374,21 @@
         "DBSecurityGroupIngress": {
             "Type": "AWS::EC2::SecurityGroupIngress",
             "Properties": {
-                    "IpProtocol": "tcp",
-                    "FromPort": "0",
-                    "ToPort": "65535",
-                    "GroupId": { 
-                        "Fn::GetAtt" : [
-                            "DBSecurityGroup", 
-                            "GroupId" 
-                        ]
-                    },
-                    "SourceSecurityGroupId": {
-                        "Fn::GetAtt": [
-                           "WebSecurityGroup",
-                           "GroupId"
-                        ]
-                    }
+                "IpProtocol": "tcp",
+                "FromPort": "0",
+                "ToPort": "65535",
+                "GroupId": {
+                    "Fn::GetAtt": [
+                        "DBSecurityGroup",
+                        "GroupId"
+                    ]
+                },
+                "SourceSecurityGroupId": {
+                    "Fn::GetAtt": [
+                        "WebSecurityGroup",
+                        "GroupId"
+                    ]
+                }
             }
         },
         "MySQLDB": {
@@ -1397,24 +1398,26 @@
                     "Ref": "DBName"
                 },
                 "DBInstanceIdentifier": {
-                    "Ref":  "DBName"
+                    "Ref": "DBName"
                 },
                 "AllocatedStorage": {
                     "Ref": "DBAllocatedStorage"
                 },
                 "StorageType": "gp2",
-                "DBSubnetGroupName": { 
+                "DBSubnetGroupName": {
                     "Ref": "rdsDBSubnetGroup"
                 },
                 "DBInstanceClass": "db.t2.micro",
                 "Engine": "MySQL",
                 "EngineVersion": "5.7.26",
-                "AutoMinorVersionUpgrade" : "true",
-                "BackupRetentionPeriod" : "7",
-                "CopyTagsToSnapshot" : "true",
-                "VPCSecurityGroups" : [{
-                    "Ref": "DBSecurityGroup"
-                }],
+                "AutoMinorVersionUpgrade": "true",
+                "BackupRetentionPeriod": "7",
+                "CopyTagsToSnapshot": "true",
+                "VPCSecurityGroups": [
+                    {
+                        "Ref": "DBSecurityGroup"
+                    }
+                ],
                 "MasterUsername": {
                     "Ref": "DBUser"
                 },
@@ -1432,6 +1435,49 @@
                 ]
             },
             "DeletionPolicy": "Snapshot"
+        },
+        "nodeserverEC2Instance": {
+            "Type": "AWS::EC2::Instance",
+            "Properties": {
+                "KeyName": {
+                    "Ref": "KeyName"
+                },
+                "ImageId": "ami-074e2d6769f445be5",
+                "InstanceType": "t2.micro",
+                "Monitoring": "true",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "fccadNode"
+                    }
+                ],
+                "NetworkInterfaces": [
+                    {
+                        "GroupSet": [
+                            {
+                                "Ref": "WebSecurityGroup"
+                            }
+                        ],
+                        "AssociatePublicIpAddress": "true",
+                        "DeviceIndex": "0",
+                        "DeleteOnTermination": "true",
+                        "SubnetId": {
+                            "Ref": "fccAceDirectTestPublic1"
+                        }
+                    }
+                ],
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "",
+                            [
+                                "#!/bin/bash -ex",
+                                "-"
+                            ]
+                        ]
+                    }
+                }
+            }
         },
         "WebServerInstance": {
             "Type": "AWS::EC2::Instance",
@@ -1570,6 +1616,10 @@
                         "Value": {
                             "Ref": "AWS::StackId"
                         }
+                    },
+                    {
+                        "Key": "Name",
+                        "Value": "fccWebServer"
                     }
                 ],
                 "NetworkInterfaces": [
