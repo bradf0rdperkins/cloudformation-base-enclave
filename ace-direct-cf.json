@@ -77,7 +77,46 @@
             "Default": "0.0.0.0/0",
             "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
             "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x."
-        }
+        },
+        "DBPort" : {
+            "Default" : "3306",
+            "Description" : "TCP/IP port for the database",
+            "Type" : "Number",
+            "MinValue" : "1150",
+            "MaxValue" : "65535"
+          },
+          "DBAllocatedStorage" : {
+            "Default" : "20",
+            "Description" : "Database storage size",
+            "Type" : "Number",
+            "MinValue" : "20",
+            "MaxValue" : "1000"
+          },
+          "DBPwd" : {
+            "NoEcho" : "true",
+            "Description" : "The database admin account password",
+            "Type" : "String",
+            "MinLength" : "1",
+            "MaxLength" : "41",
+            "AllowedPattern" : "^[a-zA-Z0-9]*$"
+          },
+          "DBUser" : {
+            "Description" : "The database admin account username",
+            "Type" : "String",
+            "MinLength" : "1",
+            "MaxLength" : "16",
+            "AllowedPattern" : "[a-zA-Z][a-zA-Z0-9]*",
+            "ConstraintDescription": "Must begin with a letter and contain only alphanumeric characters."
+          },
+          "DBName" : {
+            "Default": "MyDatabase",
+            "Description" : "The database name",
+            "Type" : "String",
+            "MinLength" : "1",
+            "MaxLength" : "64",
+            "AllowedPattern" : "[a-zA-Z][a-zA-Z0-9]*",
+            "ConstraintDescription": "Must begin with a letter and contain only alphanumeric characters."
+          }
     },
     "Mappings": {
         "Region2Examples": {
@@ -629,6 +668,26 @@
                 ]
             }
         },
+        "rdsDBSubnetGroup": {
+            "Type": "AWS::RDS::DBSubnetGroup",
+            "Properties": {
+                "DBSubnetGroupDescription": "DB Subnet group",
+                "SubnetIds": [
+                    {
+                        "Ref": "fccAceDirectTestDbWest1a"
+                    },
+                    {
+                        "Ref": "fccAceDirectTestDbWest1b"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "rdsSubnetGroup"
+                    }
+                ]
+            }
+        },
         "InternetGateway": {
             "Type": "AWS::EC2::InternetGateway",
             "Properties": {
@@ -932,12 +991,6 @@
                         "CidrIp": "0.0.0.0/0"
                     },
                     {
-                        "IpProtocol": "udp",
-                        "FromPort": "3478",
-                        "ToPort": "3478",
-                        "CidrIp": "0.0.0.0/0"
-                    },
-                    {
                         "IpProtocol": "icmp",
                         "FromPort": "-1",
                         "ToPort": "-1",
@@ -987,12 +1040,6 @@
                         "IpProtocol": "tcp",
                         "FromPort": "8005",
                         "ToPort": "8005",
-                        "CidrIp": "0.0.0.0/0"
-                    },
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "5060",
-                        "ToPort": "5060",
                         "CidrIp": "0.0.0.0/0"
                     },
                     {
@@ -1287,12 +1334,6 @@
                     },
                     {
                         "IpProtocol": "udp",
-                        "FromPort": "53",
-                        "ToPort": "53",
-                        "CidrIp": "0.0.0.0/0"
-                    },
-                    {
-                        "IpProtocol": "udp",
                         "FromPort": "51",
                         "ToPort": "51",
                         "CidrIp": "0.0.0.0/0"
@@ -1318,10 +1359,79 @@
                         "IpProtocol": "tcp",
                         "FromPort": "3306",
                         "ToPort": "3306",
+                        "CidrIp": "73.14.137.136/32"
+                    }
+                ],
+                "SecurityGroupEgress": [
+                    {
+                        "IpProtocol": "-1",
                         "CidrIp": "0.0.0.0/0"
                     }
                 ]
             }
+        },
+        "DBSecurityGroupIngress": {
+            "Type": "AWS::EC2::SecurityGroupIngress",
+            "Properties": {
+                    "IpProtocol": "tcp",
+                    "FromPort": "0",
+                    "ToPort": "65535",
+                    "GroupId": { 
+                        "Fn::GetAtt" : [
+                            "DBSecurityGroup", 
+                            "GroupId" 
+                        ]
+                    },
+                    "SourceSecurityGroupId": {
+                        "Fn::GetAtt": [
+                           "WebSecurityGroup",
+                           "GroupId"
+                        ]
+                    }
+            }
+        },
+        "MySQLDB": {
+            "Type": "AWS::RDS::DBInstance",
+            "Properties": {
+                "DBName": {
+                    "Ref": "DBName"
+                },
+                "DBInstanceIdentifier": {
+                    "Ref":  "DBName"
+                },
+                "AllocatedStorage": {
+                    "Ref": "DBAllocatedStorage"
+                },
+                "StorageType": "gp2",
+                "DBSubnetGroupName": { 
+                    "Ref": "rdsDBSubnetGroup"
+                },
+                "DBInstanceClass": "db.t2.micro",
+                "Engine": "MySQL",
+                "EngineVersion": "5.7.26",
+                "AutoMinorVersionUpgrade" : "true",
+                "BackupRetentionPeriod" : "7",
+                "CopyTagsToSnapshot" : "true",
+                "VPCSecurityGroups" : [{
+                    "Ref": "DBSecurityGroup"
+                }],
+                "MasterUsername": {
+                    "Ref": "DBUser"
+                },
+                "Port": {
+                    "Ref": "DBPort"
+                },
+                "MasterUserPassword": {
+                    "Ref": "DBPwd"
+                },
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "MySQL Database"
+                    }
+                ]
+            },
+            "DeletionPolicy": "Snapshot"
         },
         "WebServerInstance": {
             "Type": "AWS::EC2::Instance",
@@ -1535,6 +1645,34 @@
                 ]
             },
             "Description": "Newly created application URL"
+        },
+        "JDBCConnectionString": {
+            "Description": "JDBC connection string for the database",
+            "Value": {
+                "Fn::Join": [
+                    "",
+                    [
+                        "jdbc:mysql://",
+                        {
+                            "Fn::GetAtt": [
+                                "MySQLDB",
+                                "Endpoint.Address"
+                            ]
+                        },
+                        ":",
+                        {
+                            "Fn::GetAtt": [
+                                "MySQLDB",
+                                "Endpoint.Port"
+                            ]
+                        },
+                        "/",
+                        {
+                            "Ref": "DBName"
+                        }
+                    ]
+                ]
+            }
         }
     }
 }
