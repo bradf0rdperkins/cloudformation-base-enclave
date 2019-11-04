@@ -530,10 +530,8 @@
                     }
                 ]
             }
-        
-        }
-    },
-    "Instance2SecurityGroup": {
+        },
+        "Instance2SecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
                 "GroupDescription": "Enable port 80",
@@ -546,7 +544,8 @@
                     }
                 ]
             }
-        },
+        }
+    },
     "Outputs": {
         "InstanceId": {
             "Description": "InstanceId of the newly created EC2 instance",
