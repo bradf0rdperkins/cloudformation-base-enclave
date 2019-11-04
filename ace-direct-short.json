@@ -530,20 +530,6 @@
                     }
                 ]
             }
-        },
-        "Instance2SecurityGroup": {
-            "Type": "AWS::EC2::SecurityGroup",
-            "Properties": {
-                "GroupDescription": "Enable port 80",
-                "SecurityGroupIngress": [
-                    {
-                        "IpProtocol": "tcp",
-                        "FromPort": "80",
-                        "ToPort": "80",
-                        "CidrIp": "0.0.0.0/0"
-                    }
-                ]
-            }
         }
     },
     "Outputs": {
